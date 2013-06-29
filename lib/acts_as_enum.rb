@@ -1,5 +1,6 @@
-require "acts_as_enum/version"
+require 'acts_as_enum/version'
+require 'acts_as_enum/enumerable'
 
-module ActsAsEnum
-  # Your code goes here...
+class ActiveRecord::Base
+  extend ActsAsEnum
 end

@@ -4,20 +4,21 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'acts_as_enum/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "acts_as_enum"
-  spec.version       = ActsAsEnum::VERSION
-  spec.authors       = ["Paul McKibbin"]
-  spec.email         = ["pmckibbin@baesystemsdetica.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.name = 'acts_as_enum'
+  spec.version = ActsAsEnum::VERSION
+  spec.authors = ['Paul McKibbin']
+  spec.email = ['pmckibbin@gmail.com']
 
-  spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  spec.require_paths = ["lib"]
+  spec.description = %q(Active Record extender to enable the selection of a database column and have all of it's values enumerable)
+  spec.summary = %q(enumerable values from database columns)
+  spec.homepage = "http://blackrat.org"
+  spec.license = "MIT"
 
-  spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
+  spec.files = `git ls-files`.split($/)
+  spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = ['lib']
+
+  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'rake'
 end
