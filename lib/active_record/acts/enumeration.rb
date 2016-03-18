@@ -1,7 +1,7 @@
 module ActiveRecord
   module Acts
     module Enumeration
-      VERSION='0.1.3'
+      VERSION='0.1.4'
       class << self
         def included(base)
           base.class_eval do
