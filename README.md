@@ -1,6 +1,6 @@
-# ActsAsEnum
+# ActsAsEnumeration
 
-acts_as_enumerable and its aliases acts_as_enum, enumerable_column and enum_column
+acts_as_enumeration and its aliases acts_as_enumerable, acts_as_enum, enumerable_column and enum_column
 allow for unique names in a database column to behave as if they were enumerated
 types, including chaining etc.
 
@@ -8,7 +8,7 @@ types, including chaining etc.
 
 Add this line to your application's Gemfile:
 
-    gem 'acts_as_enum'
+    gem 'acts_as_enumeration'
 
 And then execute:
 
@@ -16,13 +16,13 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install acts_as_enum
+    $ gem install acts_as_enumeration
 
 ## Usage
 
 So if a database table had a column called "name", declaring
 
-   acts_as_enumerable :name
+   acts_as_enumeration :name
 
 would select all of the items in that column and map them in a hash to their
 primary key values.
@@ -41,8 +41,8 @@ as is_paul_or_michael_or_luke? which has the same effect as
 is_not_paul_or_michael_or_like which has the same effect as
 !(is_paul || is_michael? || is_luke?) or !is?(:paul, :michael, :luke)
 
-CAVEAT: due to the mechanism that the method_missing uses in is someone actually
-had the name "not bruce", the combinations cannot use this as the first element.
+CAVEAT: Due to the mechanism that the method_missing uses, if someone actually
+had the name "not bruce", the combination query cannot use this as the first element.
 i.e. "not <anything>" not just "not bruce".
 
 So a combination of is_not_bruce_or_paul? would have to be written

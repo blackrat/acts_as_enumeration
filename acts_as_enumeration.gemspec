@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
+require File.dirname(__FILE__) + '/lib/active_record/acts/enumeration'
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'acts_as_enum/version'
 
 Gem::Specification.new do |spec|
-  spec.name = 'acts_as_enum'
-  spec.version = ActsAsEnum::VERSION
+  spec.name = 'acts_as_enumeration'
+  spec.version = ActiveRecord::Acts::Enumeration::VERSION
   spec.authors = ['Paul McKibbin']
   spec.email = ['pmckibbin@gmail.com']
 
