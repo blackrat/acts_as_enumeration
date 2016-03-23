@@ -8,7 +8,7 @@ else
   require 'sqlite3'
 end
 $:.unshift File.dirname(__FILE__) + '/../lib'
-require File.dirname(__FILE__) + '/../acts_as_enumeration'
+require 'acts_as_enumeration'
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 
