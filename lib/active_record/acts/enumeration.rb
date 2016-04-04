@@ -13,16 +13,18 @@ module ActiveRecord
       end
 
       module ClassMethods
+        private
+        def portable_select(*args)
+          respond_to?(:scoped) ? scoped(:select => ["#{args.join(',')}"]) : select(*args)
+        end
+
         def normalize(string)
           string.to_s.gsub(/[\\W]+/, ' ').strip.gsub(/\s+/, '_').underscore
         end
 
+        public
         def normalize_intern(string)
           normalize(string).intern
-        end
-
-        def portable_select(*args)
-          respond_to?(:scoped) ? scoped(:select => ["#{args.join(',')}"]) : select(*args)
         end
 
         def acts_as_enumeration(*args)
