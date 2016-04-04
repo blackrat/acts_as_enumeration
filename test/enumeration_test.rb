@@ -33,6 +33,8 @@ class Enumerate < ActiveRecord::Base;
 end
 class EnumerateAll < Enumerate;
 end
+class EnumerateSome < Enumerate;
+end
 
 class EnumerateTest < (
 begin
@@ -44,11 +46,14 @@ end)
       klass.create! :name => 'first', :description => 'First field'
       klass.create! :name => 'second', :description => 'Second field'
       klass.create! :name => 'third', :description => 'Third field'
+    end
+    [EnumerateSome].each do |klass|
       klass.create! :name => 'forth', :description => 'Forth field'
       klass.create! :name => 'fifth', :description => 'Fifth field'
       klass.create! :name => 'sixth', :description => 'Sixth field'
     end
-    Enumerate.acts_as_enumeration :description
+    EnumerateAll.acts_as_enumeration :description
+    EnumerateSome.acts_as_enumeration :description
   end
 
   def teardown
@@ -56,25 +61,47 @@ end)
   end
 
   def test_basics
-    assert Enumerate.first.is?(:first_field)
     assert Enumerate.first.is?('first_field')
+    assert Enumerate.first.is?(:first_field)
     assert Enumerate.first.is_not?(:second_field)
     assert Enumerate.first.is?(:first_field, :second_field)
     assert Enumerate.first.is_not?(:second_field, :third_field)
     assert Enumerate.first.is_first_field?
     assert Enumerate.first.is_not_second_field?
     assert Enumerate.first.is_first_field_or_second_field?
-    assert Enumerate.second_field.is_first_field_or_second_field?
-    assert Enumerate.second_field.is_not_first_field?
-    assert Enumerate.first.first_field?
-    assert_equal Enumerate.first, Enumerate.first_field
+    assert EnumerateAll.second_field.is_first_field_or_second_field?
+    assert EnumerateAll.second_field.is_not_first_field?
+    assert EnumerateAll.first.first_field?
+    assert_equal EnumerateAll.first, EnumerateAll.first_field
     assert_equal(:first_field, Enumerate.first.as_key)
-    assert_equal(:first_field, Enumerate.as_key(Enumerate.first.id))
-    assert Enumerate.valid_description?(:first_field)
-    assert Enumerate.valid_description?('first_field')
-    assert !Enumerate.valid_description?(:blah_blah_field)
-    assert !Enumerate.valid_description?('blah_blah_field')
-    assert Enumerate.first.id, Enumerate.id_for_description(:first_field)
+    assert_equal(:first_field, EnumerateAll.as_key(Enumerate.first.id))
+    assert EnumerateAll.valid_description?(:first_field)
+    assert EnumerateAll.valid_description?('first_field')
+    assert !EnumerateAll.valid_description?(:blah_blah_field)
+    assert !EnumerateAll.valid_description?('blah_blah_field')
+    assert Enumerate.first.id, EnumerateAll.id_for_description(:first_field)
+  end
+
+  def test_sti
+    assert EnumerateSome.first.is?('forth_field')
+    assert EnumerateSome.first.is?(:forth_field)
+    assert EnumerateSome.first.is_not?(:second_field)
+    assert EnumerateSome.first.is?(:forth_field, :second_field)
+    assert EnumerateSome.first.is_not?(:second_field, :third_field)
+    assert EnumerateSome.first.is_forth_field?
+    assert EnumerateSome.first.is_not_second_field?
+    assert EnumerateSome.first.is_forth_field_or_second_field?
+    assert EnumerateSome.forth_field.is_forth_field_or_second_field?
+    assert EnumerateSome.forth_field.is_not_fifth_field?
+    assert EnumerateSome.first.forth_field?
+    assert_equal EnumerateSome.first, EnumerateSome.forth_field
+    assert_equal(:forth_field, EnumerateSome.first.as_key)
+    assert_equal(:forth_field, EnumerateSome.as_key(EnumerateSome.first.id))
+    assert EnumerateSome.valid_description?(:forth_field)
+    assert EnumerateSome.valid_description?('forth_field')
+    assert !EnumerateSome.valid_description?(:first_field)
+    assert !EnumerateSome.valid_description?('first_field')
+    assert EnumerateSome.first.id, EnumerateSome.id_for_description(:forth_field)
   end
 end
 

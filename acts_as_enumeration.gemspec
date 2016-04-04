@@ -1,6 +1,6 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
-require File.dirname(__FILE__) + '/lib/active_record/acts/enumeration2'
+require File.dirname(__FILE__) + '/lib/active_record/acts/enumeration'
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
