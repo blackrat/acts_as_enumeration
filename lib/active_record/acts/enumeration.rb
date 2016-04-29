@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.6"
+      VERSION="0.1.7"
       class << self
 
         def included(base)
@@ -15,11 +15,11 @@ module ActiveRecord
       module ClassMethods
         private
         def portable_select(*args)
-          respond_to?(:scoped) ? scoped(:select => ["#{args.join(',')}"]) : select(*args)
+          respond_to?(:scoped) ? scoped(:select => "#{args.join(',')}") : select(*args)
         end
 
         def normalize(string)
-          string.to_s.gsub(/[\\W]+/, ' ').strip.gsub(/\s+/, '_').underscore
+          string.to_s.gsub(/[\W]+/, ' ').strip.gsub(/\s+/, '_').underscore
         end
 
         public
