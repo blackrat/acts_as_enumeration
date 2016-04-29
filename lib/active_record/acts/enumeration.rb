@@ -74,8 +74,10 @@ module ActiveRecord
               end.instance_eval do
                 define_method(key) { self.send("for_#{field}", y) }
                 define_method(key.camelize) { self.send("id_for_#{field}", y)}
-                self.const_set(key.camelize.upcase,self.send(key.camelize)) unless defined?(key.camelize.upcase)
+                define_method(key.camelize.upcase) { self.send(key.camelize)}
               end
+              self.const_set(key.camelize,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize)
+              self.const_set(key.camelize.upcase,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize.upcase)
             end
           end
         end
