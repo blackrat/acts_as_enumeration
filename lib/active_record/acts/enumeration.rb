@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.7"
+      VERSION="0.1.8"
       class << self
 
         def included(base)
@@ -73,6 +73,7 @@ module ActiveRecord
                 self;
               end.instance_eval do
                 define_method(key) { self.send("for_#{field}", y) }
+                define_method(key.camelize) { self.send("id_for_#{field}", y)}
               end
             end
           end
