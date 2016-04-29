@@ -80,6 +80,10 @@ end)
     assert !EnumerateAll.valid_description?(:blah_blah_field)
     assert !EnumerateAll.valid_description?('blah_blah_field')
     assert Enumerate.first.id, EnumerateAll.id_for_description(:first_field)
+    assert EnumerateAll::FIRSTFIELD,Enumerate.first.id
+    assert EnumerateAll::FirstField,Enumerate.first.id
+    assert EnumerateAll.FIRSTFIELD,Enumerate.first.id
+    assert EnumerateAll.FirstField,Enumerate.first.id
   end
 
   def test_sti
