@@ -29,12 +29,10 @@ def teardown_db
   end
 end
 
-class Enumerate < ActiveRecord::Base;
-end
-class EnumerateAll < Enumerate;
-end
-class EnumerateSome < Enumerate;
-end
+class Enumerate < ActiveRecord::Base; end
+class EnumerateAll < Enumerate; end
+class EnumerateSome < Enumerate; end
+class BrokenEnumeration < Enumerate; end
 
 class EnumerateTest < (
 begin
@@ -52,8 +50,12 @@ end)
       klass.create! :name => 'fifth', :description => 'Fifth field'
       klass.create! :name => 'sixth', :description => 'Sixth field'
     end
+    [BrokenEnumeration].each do |klass|
+      klass.create! :name => '33108', :description => '33108 field'
+    end
     EnumerateAll.acts_as_enumeration :description
     EnumerateSome.acts_as_enumeration :description
+    BrokenEnumeration.acts_as_enumeration :name
   end
 
   def teardown
@@ -84,6 +86,7 @@ end)
     assert EnumerateAll::FirstField,Enumerate.first.id
     assert EnumerateAll.FIRSTFIELD,Enumerate.first.id
     assert EnumerateAll.FirstField,Enumerate.first.id
+    assert BrokenEnumeration._33108,BrokenEnumeration.first.id
   end
 
   def test_sti
