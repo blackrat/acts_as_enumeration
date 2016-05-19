@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.9c"
+      VERSION="0.1.10"
       class << self
 
         def included(base)
@@ -76,8 +76,12 @@ module ActiveRecord
                 define_method(key.camelize) { self.send("id_for_#{field}", y)}
                 define_method(key.camelize.upcase) { self.send(key.camelize)}
               end
-              self.const_set(key.camelize,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize)
-              self.const_set(key.camelize.upcase,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize.upcase)
+              begin
+                self.const_set(key.camelize,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize)
+                self.const_set(key.camelize.upcase,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize.upcase)
+              rescue Exception=>e
+                puts("Warning: Skipping constant definition for #{key}")
+              end
             end
           end
         end
