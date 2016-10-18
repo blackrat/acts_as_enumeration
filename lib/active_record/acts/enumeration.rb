@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.10"
+      VERSION="0.1.11"
       class << self
 
         def included(base)
