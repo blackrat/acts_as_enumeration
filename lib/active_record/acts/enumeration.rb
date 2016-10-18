@@ -42,10 +42,10 @@ module ActiveRecord
             class << self;
               self;
             end).class_eval do
-              define_method(:enumerations) { |name| self.enumeration[name] }
+              define_method(:enumerations) { |name| self.enumeration[name.intern] }
               define_method("#{field}_valid?") { |value| !!send("id_for_#{field}", value) }
               alias_method "valid_#{field}?", "#{field}_valid?"
-              define_method("id_for_#{field}") { |value| enumerations(field)[value] }
+              define_method("id_for_#{field}") { |value| enumerations(field)[value.intern] }
               define_method("for_#{field}") { |value| find(send("id_for_#{field}", value)) }
               define_method("enum_#{field}") { enumerations(field) }
               define_method("as_key") { |value| find(value).as_key rescue nil }
@@ -65,7 +65,7 @@ module ActiveRecord
             end
 
             portable_select(field).map { |x| normalize_intern(x.send(field)) }.each do |y|
-              key = y.to_s=~/^[a-z_]/ && !respond_to?(y) ? y.to_s : "_#{y.to_s}"
+              key = ((y.to_s=~/^[a-z_]/) && !respond_to?(y)) ? y.to_s : "_#{y.to_s}"
               define_method(:as_key) { self.class.normalize_intern(send(field)) }
               define_method("is_#{y}?") { is?(y) }
               alias_method "#{key}?", "is_#{y}?"
@@ -74,7 +74,7 @@ module ActiveRecord
               end.instance_eval do
                 define_method(key) { self.send("for_#{field}", y) }
                 define_method(key.camelize) { self.send("id_for_#{field}", y)}
-                define_method(key.camelize.upcase) { self.send(key.camelize)}
+                define_method(key.camelize.upcase) { self.send("id_for_#{field}", y)}
               end
               begin
                 self.const_set(key.camelize,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize)
