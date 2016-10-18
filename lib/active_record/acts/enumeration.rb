@@ -65,7 +65,7 @@ module ActiveRecord
             end
 
             portable_select(field).map { |x| normalize_intern(x.send(field)) }.each do |y|
-              key = y.to_s=~/^[a-z_]/ ? y.to_s : "_#{y.to_s}"
+              key = y.to_s=~/^[a-z_]/ && !respond_to?(y) ? y.to_s : "_#{y.to_s}"
               define_method(:as_key) { self.class.normalize_intern(send(field)) }
               define_method("is_#{y}?") { is?(y) }
               alias_method "#{key}?", "is_#{y}?"
