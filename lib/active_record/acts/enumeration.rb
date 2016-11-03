@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.11"
+      VERSION="0.1.12"
       class << self
 
         def included(base)
@@ -64,8 +64,22 @@ module ActiveRecord
               end
             end
 
+            def _key(string)
+              ((string.to_s=~/^[a-z_]/) && !respond_to?(string.to_s)) ? string.to_s : "_#{string.to_s}"
+            end
+
+            def _camelized_key(string)
+              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize)) ? string.to_s : "_#{string.to_s}").camelize
+            end
+
+            def _camelized_upcase_key(string)
+              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize.upcase)) ? string.to_s : "_#{string.to_s}").camelize.upcase
+            end
+
             portable_select(field).map { |x| normalize_intern(x.send(field)) }.each do |y|
-              key = ((y.to_s=~/^[a-z_]/) && !respond_to?(y)) ? y.to_s : "_#{y.to_s}"
+              key=_key(y)
+              camelized_key=_camelized_key(y)
+              camelized_upcase_key=_camelized_upcase_key(y)
               define_method(:as_key) { self.class.normalize_intern(send(field)) }
               define_method("is_#{y}?") { is?(y) }
               alias_method "#{key}?", "is_#{y}?"
@@ -73,14 +87,14 @@ module ActiveRecord
                 self;
               end.instance_eval do
                 define_method(key) { self.send("for_#{field}", y) }
-                define_method(key.camelize) { self.send("id_for_#{field}", y)}
-                define_method(key.camelize.upcase) { self.send("id_for_#{field}", y)}
+                define_method(camelized_key) { self.send("id_for_#{field}", y)}
+                define_method(camelized_upcase_key) { self.send("id_for_#{field}", y)}
               end
               begin
-                self.const_set(key.camelize,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize)
-                self.const_set(key.camelize.upcase,self.send("id_for_#{field}",y)) unless self.const_defined?(key.camelize.upcase)
+                self.const_set(camelized_key,self.send("id_for_#{field}",y))
+                self.const_set(camelized_upcase_key,self.send("id_for_#{field}",y))
               rescue Exception=>e
-                puts("Warning: Skipping constant definition for #{key}")
+                puts("Warning: Skipping constant definition for #{y}")
               end
             end
           end

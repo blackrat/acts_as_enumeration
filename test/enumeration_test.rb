@@ -52,6 +52,7 @@ end)
     end
     [BrokenEnumeration].each do |klass|
       klass.create! :name => '33108', :description => '33108 field'
+      klass.create! :name => 'all', :description => 'already defined method'
     end
     EnumerateAll.acts_as_enumeration :description
     EnumerateSome.acts_as_enumeration :description
@@ -87,6 +88,8 @@ end)
     assert EnumerateAll.FIRSTFIELD,Enumerate.first.id
     assert EnumerateAll.FirstField,Enumerate.first.id
     assert BrokenEnumeration._33108,BrokenEnumeration.first.id
+    assert BrokenEnumeration._all.id,BrokenEnumeration.last.id
+    assert BrokenEnumeration::ALL,Enumerate.last.id
   end
 
   def test_sti
