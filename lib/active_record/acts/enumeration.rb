@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.12"
+      VERSION="0.1.13"
       class << self
 
         def included(base)
@@ -69,11 +69,11 @@ module ActiveRecord
             end
 
             def _camelized_key(string)
-              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize)) ? string.to_s : "_#{string.to_s}").camelize
+              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize)) ? string.to_s : "_#{string.to_s.camelize}").camelize
             end
 
             def _camelized_upcase_key(string)
-              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize.upcase)) ? string.to_s : "_#{string.to_s}").camelize.upcase
+              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize.upcase)) ? string.to_s : "_#{string.to_s.camelize}").camelize.upcase
             end
 
             portable_select(field).map { |x| normalize_intern(x.send(field)) }.each do |y|
