@@ -64,22 +64,30 @@ module ActiveRecord
               end
             end
 
+            def allowed_chars(string)
+              string.to_s=~/^[a-z_]/
+            end
+
+            def check_string(string, &block)
+              allowed_chars(string) && (yield string)
+            end
+
             def _key(string)
-              ((string.to_s=~/^[a-z_]/) && !respond_to?(string.to_s)) ? string.to_s : "_#{string.to_s}"
+              check_string(string) {|y| !respond_to?(y)} ? string : "_#{string}"
             end
 
             def _camelized_key(string)
-              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize)) ? string.to_s : "_#{string.to_s.camelize}").camelize
+              check_string(string) {|y| !const_defined?(string.camelize)} ? string.camelize : "_#{string.camelize}"
             end
 
             def _camelized_upcase_key(string)
-              (((string.to_s=~/^[a-z_]/) && !const_defined?(string.to_s.camelize.upcase)) ? string.to_s : "_#{string.to_s.camelize}").camelize.upcase
+              check_string(string) {|y| !const_defined?(string.camelize.upcase)} ? string.camelize.upcase : "_#{string.camelize.upcase}"
             end
 
             portable_select(field).map { |x| normalize_intern(x.send(field)) }.each do |y|
-              key=_key(y)
-              camelized_key=_camelized_key(y)
-              camelized_upcase_key=_camelized_upcase_key(y)
+              key=_key(y.to_s)
+              camelized_key=_camelized_key(y.to_s)
+              camelized_upcase_key=_camelized_upcase_key(y.to_s)
               define_method(:as_key) { self.class.normalize_intern(send(field)) }
               define_method("is_#{y}?") { is?(y) }
               alias_method "#{key}?", "is_#{y}?"
@@ -92,9 +100,13 @@ module ActiveRecord
               end
               begin
                 self.const_set(camelized_key,self.send("id_for_#{field}",y))
+              rescue Exception=>e
+                puts("Warning: Skipping constant definition for #{camelized_key}")
+              end
+              begin
                 self.const_set(camelized_upcase_key,self.send("id_for_#{field}",y))
               rescue Exception=>e
-                puts("Warning: Skipping constant definition for #{y}")
+                puts("Warning: Skipping constant definition for #{camelized_upcase_key}")
               end
             end
           end

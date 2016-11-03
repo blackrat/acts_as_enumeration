@@ -88,8 +88,10 @@ end)
     assert EnumerateAll.FIRSTFIELD,Enumerate.first.id
     assert EnumerateAll.FirstField,Enumerate.first.id
     assert BrokenEnumeration._33108,BrokenEnumeration.first.id
-    assert BrokenEnumeration._all.id,BrokenEnumeration.last.id
-    assert BrokenEnumeration::ALL,Enumerate.last.id
+    assert BrokenEnumeration._all,BrokenEnumeration.find_by_name('all')
+    assert BrokenEnumeration::All,BrokenEnumeration.find_by_name('all').id
+    assert BrokenEnumeration::ALL,BrokenEnumeration.find_by_name('all').id
+    assert BrokenEnumeration::ALL,BrokenEnumeration.id_for_name(:all)
   end
 
   def test_sti
