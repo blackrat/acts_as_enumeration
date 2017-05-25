@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts
     module Enumeration
 
-      VERSION="0.1.14"
+      VERSION="0.1.15"
       class << self
 
         def included(base)
@@ -114,7 +114,7 @@ module ActiveRecord
 
         [:acts_as_enum, :enum_column, :enumerable_column, :acts_as_enumerable].each do |aliased|
           unless defined?(aliased)
-            alias_method :aliased, :acts_as_enumeration
+            alias_method aliased, :acts_as_enumeration
           end
         end
       end
