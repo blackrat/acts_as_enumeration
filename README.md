@@ -1,5 +1,11 @@
 # ActsAsEnumeration
 
+If you've found this, you may be wondering why it exists since Rails has had enum since version 4.1.8. The biggest 
+difference with this one is that it allows you to have a separate table to hold your enumerated values and have the 
+primary key as the enumeration, which adds flexibility in how they are used.
+
+The big plus that ActiveRecord::Enum has is that it adds scopes directly, 
+
 acts_as_enumeration and its aliases acts_as_enumerable, acts_as_enum, enumerable_column and enum_column
 allow for unique names in a database column to behave as if they were enumerated
 types, including chaining etc.

@@ -1,24 +1,25 @@
+# frozen_string_literal: true
+
 require 'rubygems'
-if RUBY_VERSION >= '1.9'
-  require 'minitest/autorun'
-  require 'active_record'
-else
-  require 'test/unit'
-  require 'activerecord'
-  require 'sqlite3'
-end
+require 'minitest/autorun'
+require 'active_record'
+
 $:.unshift File.dirname(__FILE__) + '/../lib'
 require 'acts_as_enumeration'
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 
 def setup_db
   ActiveRecord::Base.logger
-  ActiveRecord::Schema.define(:version => 1) do
+  ActiveRecord::Schema.define(version: 1) do
     create_table :enumerates do |t|
       t.column :type, :string
       t.column :name, :string
       t.column :description, :string
+    end
+
+    create_table :associated_tables do |t|
+      t.references :enumerates
     end
   end
 end
@@ -36,23 +37,27 @@ class BrokenEnumeration < Enumerate; end
 
 class EnumerateTest < (
 begin
-  MiniTest::Test rescue Test::Unit::TestCase
+  begin
+    MiniTest::Test
+  rescue StandardError
+    Test::Unit::TestCase
+  end
 end)
   def setup
     setup_db
     [EnumerateAll].each do |klass|
-      klass.create! :name => 'first', :description => 'First field'
-      klass.create! :name => 'second', :description => 'Second field'
-      klass.create! :name => 'third', :description => 'Third field'
+      klass.create! name: 'first', description: 'First field'
+      klass.create! name: 'second', description: 'Second field'
+      klass.create! name: 'third', description: 'Third field'
     end
     [EnumerateSome].each do |klass|
-      klass.create! :name => 'forth', :description => 'Forth field'
-      klass.create! :name => 'fifth', :description => 'Fifth field'
-      klass.create! :name => 'sixth', :description => 'Sixth field'
+      klass.create! name: 'forth', description: 'Forth field'
+      klass.create! name: 'fifth', description: 'Fifth field'
+      klass.create! name: 'sixth', description: 'Sixth field'
     end
     [BrokenEnumeration].each do |klass|
-      klass.create! :name => '33108', :description => '33108 field'
-      klass.create! :name => 'all', :description => 'already defined method'
+      klass.create! name: '33108', description: '33108 field'
+      klass.create! name: 'all', description: 'already defined method'
     end
     EnumerateAll.acts_as_enumeration :description
     EnumerateSome.acts_as_enumeration :description
@@ -83,15 +88,15 @@ end)
     assert !EnumerateAll.valid_description?(:blah_blah_field)
     assert !EnumerateAll.valid_description?('blah_blah_field')
     assert Enumerate.first.id, EnumerateAll.id_for_description(:first_field)
-    assert EnumerateAll::FIRSTFIELD,Enumerate.first.id
-    assert EnumerateAll::FirstField,Enumerate.first.id
-    assert EnumerateAll.FIRSTFIELD,Enumerate.first.id
-    assert EnumerateAll.FirstField,Enumerate.first.id
-    assert BrokenEnumeration._33108,BrokenEnumeration.first.id
-    assert BrokenEnumeration._all,BrokenEnumeration.find_by_name('all')
-    assert BrokenEnumeration::All,BrokenEnumeration.find_by_name('all').id
-    assert BrokenEnumeration::ALL,BrokenEnumeration.find_by_name('all').id
-    assert BrokenEnumeration::ALL,BrokenEnumeration.id_for_name(:all)
+    assert EnumerateAll::FIRSTFIELD, Enumerate.first.id
+    assert EnumerateAll::FirstField, Enumerate.first.id
+    assert EnumerateAll.FIRSTFIELD, Enumerate.first.id
+    assert EnumerateAll.FirstField, Enumerate.first.id
+    assert BrokenEnumeration._33108, BrokenEnumeration.first.id
+    assert BrokenEnumeration._all, BrokenEnumeration.find_by_name('all')
+    assert BrokenEnumeration::All, BrokenEnumeration.find_by_name('all').id
+    assert BrokenEnumeration::ALL, BrokenEnumeration.find_by_name('all').id
+    assert BrokenEnumeration::ALL, BrokenEnumeration.id_for_name(:all)
   end
 
   def test_sti
@@ -116,4 +121,3 @@ end)
     assert EnumerateSome.first.id, EnumerateSome.id_for_description(:forth_field)
   end
 end
-
